@@ -7,10 +7,10 @@
 2. Создайте новый проект на GitHub, 
 3. Замените origin склонированного проекта на свой:
 
-`
+````
 git remote remove origin
 git remote add origin ssh://git@gitlab.kassir.ru:23/kino/kino.git
-`
+````
 
 4. Теперь можно выполнять задачи.
 
