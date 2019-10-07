@@ -9,6 +9,7 @@
 
 `
 git remote remove origin
+
 git remote add origin ssh://git@gitlab.kassir.ru:23/kino/kino.git
 `
 
