@@ -9,7 +9,7 @@
 
 ````
 git remote remove origin
-git remote add origin ssh://git@gitlab.kassir.ru:23/kino/kino.git
+git remote add origin git@github.com:dekar91/test_questions.git
 ````
 
 4. Теперь можно выполнять задачи.
