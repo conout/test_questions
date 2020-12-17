@@ -23,8 +23,23 @@ $expression1 = '100+5'; // 105
 $expression2 = '5-5'; // 0
 $expression3 = '10+6-12'; // 4
 
-function calculate(string $expression):int {
-    /** @todo ПИШИТЕ ВАШ КОД ЗДЕСЬ*/
+function calculate(string $expression):int 
+{
+    $result = 0;
+    $sum = explode("+", $expression);
+
+    foreach ($sum as $term) 
+    {
+    	$diff = explode("-", $term);
+    	$result += $diff[0];
+
+    	for($i = 1; $i < count($diff); $i++) 
+    	{
+    		$result -= $diff[$i];
+    	}
+    }
+
+    return $result;
 }
 
 echo calculate($expression1);
