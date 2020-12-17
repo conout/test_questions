@@ -36,7 +36,7 @@
         с ключами "номер заказа_цена"
     3. Возвращаем результат
  *
- * ЗАТРАЧЕНО: в конце работы, опишите сколько потребовалось времени.
+ * ЗАТРАЧЕНО: 15 минут.
  */
 
 $orders = [
@@ -52,10 +52,23 @@ $orders = [
     ]]
 ];
 
-function createReport(array $orders):array {
+function createReport(array $orders):array 
+{
     $lines = array();
+    $temp_arr = array();
 
-    /** @todo ПИШИТЕ ВАШ КОД ЗДЕСЬ*/
+    foreach ($orders as $order) {
+        foreach ($order['tickets'] as $ticket) {
+            $temp_arr[$order['id'].'_'.$ticket['price']]['orderId'] = $order['id'];
+            $temp_arr[$order['id'].'_'.$ticket['price']]['count'] += 1;
+            $temp_arr[$order['id'].'_'.$ticket['price']]['sum'] += $ticket['price'];
+        }
+    }
 
+    $lines = array_values($temp_arr);
     return $lines;
 }
+
+echo "<pre>";
+print_r(createReport($orders));
+echo "</pre>";
