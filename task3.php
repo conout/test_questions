@@ -9,6 +9,7 @@
  * Укажите почему фрагмент написал плохо(или хорошо), как можно улучшить решение.
  *
  * Class Action
+    Время выполнения: 1 час
  */
 
 class Action
@@ -33,6 +34,21 @@ class Event extends Action
     {
         $urlParts = ['id' => $this->id];
 
+        /*довольно неочевидное решение. прямо костыль
+        я бы сделал в родительском методе именованный массив
+        [
+            'link' => 'example.com',
+            'type' => 'action',
+            'name' => 'novogodnyaya_elka',
+            'action_id' => 0,
+            '#' => 'description'
+        ]
+        а здесь 
+        $urlParts = parent::getUrl();
+        $urlParts['action_id'] = $this->id;
+
+        еще, как вариант, не передават ьмассив, а сделать эти переменные параметрами родительского класса
+        */
         $urlParts = parent::getUrl() + $urlParts;
 
         if (isset($urlParts['#']))  {
@@ -44,20 +60,29 @@ class Event extends Action
         return $urlParts;
     }
 
+    //конструктор не первый метод в классе - это плохо для читаемости кода
     public function __construct(int $id, float $price)
     {
         $this->id = $id;
         $this->price = $price;
     }
 
+    //можно было использовать $this->sectors внутри метода, а вообще я бы сделал sectors отдельным классом
     public static function filterActiveSectors(&$sectors)
     {
+        //ну и тут ссылка непонятно для чего
         foreach ($sectors as $key => &$sector) {
+            //это не объект, а массив. должно быть "if (!$sector['active'])", чтобы работало корректно
+            //сейчас просто удаляет всё
             if (!$sector->active)
                 unset($sectors[$key]);
         }
+        //метод ничего не возвращает. а должен, видимо, sectors
+        //либо использовать и менять this->sectors
+        return $sectors;
     }
 
+    //нет смысла делать методы get и set для свойства с доступом public
     public function getSectors()
     {
         return $this->sectors;
@@ -70,14 +95,19 @@ class Event extends Action
 
     public function getTotal()
     {
+        // можно написать короче
+        // return $this->price * (1 + self::getServiceFeeRate());
         return $this->price * Action::getServiceFeeRate() + $this->price;
     }
 }
 
 $event = new Event(1, 100.18);
-$event->setSectors([1 => ['name' => 'Партер', 'quantity' => 200, 'active' => true], [2 => ['name' => 'Балкон', 'quantity' => 100, , 'active' => false]]]);
+//в массиве пара скобок вокруг второй пары ключ-значение, еще запятая - ошибка синтаксиса
+//$event->setSectors([1 => ['name' => 'Партер', 'quantity' => 200, 'active' => true], [2 => ['name' => 'Балкон', 'quantity' => 100, , 'active' => false]]]);
+//исправил, чтобы работало                          
+$event->setSectors([1 => ['name' => 'Партер', 'quantity' => 200, 'active' => true], 2 => ['name' => 'Балкон', 'quantity' => 100, 'active' => false]]);
 $sectors = Event::filterActiveSectors($event->getSectors());
 
 var_dump($sectors);
-echo (int) $event->getTotal();
+echo (int) $event->getTotal(); //а выгодно ли округлять цену в меньшую сторону? =)
 echo implode('/', $event->getUrl());
